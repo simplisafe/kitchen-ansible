@@ -992,15 +992,18 @@ module Kitchen
 
       def prepare_additional_copy_path
         info('Preparing additional_copy_path')
-        additional_files.each do |file|
-           info("Copy additional path: #{file}")
-           destination = File.join(sandbox_path, File.basename(file))
-           if File.directory?(file)
-             debug("Copy dir: #{file} #{destination}")
-             FileUtils.cp_r(file, destination)
-           else
-             debug("Copy file: #{file} #{destination}")
-             FileUtils.cp(file, destination)
+        additional_files.each do |glob|
+           Dir.glob("#{glob}").each do |file|
+             info("Copy additional path: #{file}")
+
+             destination = File.join(sandbox_path, File.basename(file))
+             if File.directory?(file)
+               debug("Copy dir: #{file} #{destination}")
+               FileUtils.cp_r(file, destination)
+             else
+               debug("Copy file: #{file} #{destination}")
+               FileUtils.cp(file, destination)
+             end
            end
         end
         recursive_additional_files.each do |file|
